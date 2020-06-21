@@ -1,20 +1,6 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
 
-const Container = styled.div`
-  width: 606px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const Box = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: ${({ empty }) => (empty ? "white" : "green")};
-  margin-left: 2px;
-  margin-bottom: 2px;
-`;
+import { Container, Heading, PuzzleContainer, Plate, Number } from "./styled";
 
 const countInversions = arr => {
   let count = 0;
@@ -74,7 +60,7 @@ const swap = (arr, a, b) => {
   arr[b] = current;
 };
 
-const App = () => {
+const Puzzle = () => {
   const [puzzle, setPuzzle] = useState(generatePuzzle());
   const [gap, setGap] = useState(8);
 
@@ -91,23 +77,25 @@ const App = () => {
       swap(arr, position, gap);
       setGap(position);
       setPuzzle(arr);
-      // console.log(isSolved(arr));
     }
   };
 
   return (
     <Container>
-      {puzzle.map((number, index) => (
-        <Box
-          key={number}
-          empty={number === 9}
-          onClick={() => handleClick(index)}
-        >
-          {number}
-        </Box>
-      ))}
+      <Heading>Sliding Puzzle</Heading>
+      <PuzzleContainer>
+        {puzzle.map((number, index) => (
+          <Plate
+            key={number}
+            value={number - 1}
+            onClick={() => handleClick(index)}
+          >
+            <Number>{number}</Number>
+          </Plate>
+        ))}
+      </PuzzleContainer>
     </Container>
   );
 };
 
-export default App;
+export default Puzzle;
