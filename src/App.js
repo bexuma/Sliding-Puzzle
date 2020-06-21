@@ -68,6 +68,12 @@ const isSolved = puzzle => {
   return true;
 };
 
+const swap = (arr, a, b) => {
+  const current = arr[a];
+  arr[a] = arr[b];
+  arr[b] = current;
+};
+
 const App = () => {
   const [puzzle, setPuzzle] = useState(generatePuzzle());
   const [gap, setGap] = useState(8);
@@ -82,11 +88,10 @@ const App = () => {
       (Math.floor(gap / 3) === Math.floor(position / 3) &&
         Math.abs(gap - position) === 1)
     ) {
-      const current = arr[position];
-      arr[position] = arr[gap];
-      arr[gap] = current;
+      swap(arr, position, gap);
       setGap(position);
       setPuzzle(arr);
+      // console.log(isSolved(arr));
     }
   };
 
