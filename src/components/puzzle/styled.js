@@ -13,7 +13,7 @@ const Container = styled.div`
 const Heading = styled.h1``;
 
 const PuzzleContainer = styled.div`
-  width: 606px;
+  width: ${({ side }) => `${600 + side * 2}px`};
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -24,20 +24,23 @@ const Number = styled.span`
 `;
 
 const Plate = styled.div`
-  width: 200px;
-  height: 200px;
+  width: ${({ sideWidth }) => `${sideWidth}px`};
+  height: ${({ sideWidth }) => `${sideWidth}px`};
   margin-left: 2px;
   margin-bottom: 2px;
   position: relative;
 
-  ${({ value }) =>
-    value !== 8 &&
+  ${({ value, side, sideWidth }) =>
+    value !== side ** 2 - 1 &&
     css`
       background-image: url(${image});
       background-position: ${() => {
-        const first = value % 3 === 0 ? 0 : 200 * (-1) ** (value % 3);
+        const first =
+          value % side === 0 ? 0 : sideWidth * (-1) ** (value % side);
         const second =
-          Math.floor(value / 3) === 0 ? 0 : 200 * (-1) ** Math.floor(value / 3);
+          Math.floor(value / side) === 0
+            ? 0
+            : sideWidth * (-1) ** Math.floor(value / side);
 
         return `${first}px ${second}px`;
       }};

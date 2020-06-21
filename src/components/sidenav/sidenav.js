@@ -35,27 +35,30 @@ const shuffle = arr => {
   return arr;
 };
 
-const generatePuzzle = () => {
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const generatePuzzle = length => {
+  const numbers = [...Array(length + 1).keys()].splice(1);
 
   const puzzle = shuffle(numbers.slice(0, numbers.length - 1));
   puzzle.push(numbers.length);
 
-  return isSolvable(puzzle) ? puzzle : generatePuzzle();
+  return isSolvable(puzzle) ? puzzle : generatePuzzle(length);
 };
 
-const Sidenav = ({ setPuzzle }) => {
+const Sidenav = ({ length, setPuzzle, moves }) => {
   return (
     <Container>
-      <button type="button" onClick={() => setPuzzle(generatePuzzle())}>
+      <button type="button" onClick={() => setPuzzle(generatePuzzle(length))}>
         Начать
       </button>
+      <p>Number of steps: {moves}</p>
     </Container>
   );
 };
 
 Sidenav.propTypes = {
-  setPuzzle: PropTypes.func.isRequired
+  length: PropTypes.number.isRequired,
+  setPuzzle: PropTypes.func.isRequired,
+  moves: PropTypes.number.isRequired
 };
 
 export default Sidenav;
