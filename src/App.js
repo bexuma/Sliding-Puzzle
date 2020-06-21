@@ -16,6 +16,34 @@ const Box = styled.div`
   margin-bottom: 2px;
 `;
 
+const generateInversionsNumber = arr => {
+  let count = 0;
+  for (let i = 0; i < 9 - 1; i += 1) {
+    for (let j = i + 1; j < 9; j += 1) {
+      // Value 0 is used for empty space
+      if (arr[j] && arr[i] && arr[i] > arr[j]) {
+        count += 1;
+      }
+    }
+  }
+
+  return count;
+};
+
+const isSolvable = puzzle => {
+  const arr = [];
+
+  for (let i = 0; i < 3; i += 1) {
+    for (let j = 0; j < 3; j += 1) {
+      arr.push(puzzle[i][j]);
+    }
+  }
+
+  const inversionsNumber = generateInversionsNumber(arr);
+
+  return inversionsNumber % 2 === 0;
+};
+
 const generatePuzzle = () => {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const puzzle = [];
@@ -36,7 +64,9 @@ const generatePuzzle = () => {
   puzzle.push(generateRow());
   puzzle.push(generateRow());
 
-  return puzzle;
+  return isSolvable(puzzle) ? puzzle : generatePuzzle();
+};
+
 };
 
 const App = () => {
