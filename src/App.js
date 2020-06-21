@@ -16,8 +16,31 @@ const Box = styled.div`
   margin-bottom: 2px;
 `;
 
+const generatePuzzle = () => {
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const puzzle = [];
+
+  const generateRow = () => {
+    const row = [];
+
+    for (let i = 0; i < 3; i += 1) {
+      const index = Math.floor(Math.random() * (numbers.length - 1));
+      row.push(numbers[index]);
+      numbers.splice(index, 1);
+    }
+
+    return row;
+  };
+
+  puzzle.push(generateRow());
+  puzzle.push(generateRow());
+  puzzle.push(generateRow());
+
+  return puzzle;
+};
+
 const App = () => {
-  const [puzzle, setPuzzle] = useState([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+  const [puzzle, setPuzzle] = useState(generatePuzzle());
   const [gap, setGap] = useState({ row: 2, col: 2 });
 
   const handleClick = (row, col) => {
