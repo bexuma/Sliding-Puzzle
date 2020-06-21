@@ -16,8 +16,9 @@ const Box = styled.div`
   margin-bottom: 2px;
 `;
 
-const generateInversionsNumber = arr => {
+const countInversions = arr => {
   let count = 0;
+
   for (let i = 0; i < 9 - 1; i += 1) {
     for (let j = i + 1; j < 9; j += 1) {
       // Value 0 is used for empty space
@@ -31,79 +32,75 @@ const generateInversionsNumber = arr => {
 };
 
 const isSolvable = puzzle => {
-  const arr = [];
+  const inversions = countInversions(puzzle);
 
-  for (let i = 0; i < 3; i += 1) {
-    for (let j = 0; j < 3; j += 1) {
-      arr.push(puzzle[i][j]);
-    }
+  return inversions % 2 === 0;
+};
+
+const shuffle = arr => {
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 
-  const inversionsNumber = generateInversionsNumber(arr);
-
-  return inversionsNumber % 2 === 0;
+  return arr;
 };
 
 const generatePuzzle = () => {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const puzzle = [];
 
-  const generateRow = () => {
-    const row = [];
-
-    for (let i = 0; i < 3; i += 1) {
-      const index = Math.floor(Math.random() * (numbers.length - 1));
-      row.push(numbers[index]);
-      numbers.splice(index, 1);
-    }
-
-    return row;
-  };
-
-  puzzle.push(generateRow());
-  puzzle.push(generateRow());
-  puzzle.push(generateRow());
+  const puzzle = shuffle(numbers.slice(0, numbers.length - 1));
+  puzzle.push(numbers.length);
 
   return isSolvable(puzzle) ? puzzle : generatePuzzle();
 };
 
+const isSolved = puzzle => {
+  const solution = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  for (let i = 0; i < 9; i += 1) {
+    if (puzzle[i] !== solution[i]) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const App = () => {
   const [puzzle, setPuzzle] = useState(generatePuzzle());
-  const [gap, setGap] = useState({ row: 2, col: 2 });
+  const [gap, setGap] = useState(8);
 
-  const handleClick = (row, col) => {
-    // create the copy of puzzle
-    const arr = JSON.parse(JSON.stringify(puzzle));
+  const handleClick = position => {
+    if (position === gap) return;
+
+    const arr = [...puzzle];
 
     if (
-      (gap.col === col && Math.abs(gap.row - row) < 2) ||
-      (gap.row === row && Math.abs(gap.col - col) < 2)
+      (gap % 3 === position % 3 && Math.abs(gap - position) === 3) ||
+      (Math.floor(gap / 3) === Math.floor(position / 3) &&
+        Math.abs(gap - position) === 1)
     ) {
-      // swap the values
-      const current = arr[row][col];
-      arr[row][col] = arr[gap.row][gap.col];
-      arr[gap.row][gap.col] = current;
-
-      setGap({ row, col });
+      const current = arr[position];
+      arr[position] = arr[gap];
+      arr[gap] = current;
+      setGap(position);
       setPuzzle(arr);
     }
   };
 
   return (
     <Container>
-      {puzzle.map((rowArr, row) =>
-        rowArr.map((value, col) => (
-          <Box
-            empty={value === 9}
-            key={value}
-            onClick={() => handleClick(row, col)}
-          >
-            {value}
-          </Box>
-        ))
-      )}
+      {puzzle.map((number, index) => (
+        <Box
+          key={number}
+          empty={number === 9}
+          onClick={() => handleClick(index)}
+        >
+          {number}
+        </Box>
+      ))}
     </Container>
   );
 };
