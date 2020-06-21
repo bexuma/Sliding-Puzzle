@@ -64,6 +64,12 @@ const Puzzle = () => {
   const [puzzle, setPuzzle] = useState(generatePuzzle());
   const [gap, setGap] = useState(8);
 
+  useEffect(() => {
+    if (isSolved(puzzle)) {
+      alert("Congratulations, Amina! You solved the puzzle!");
+    }
+  }, [puzzle]);
+
   const handleClick = position => {
     if (position === gap) return;
 
