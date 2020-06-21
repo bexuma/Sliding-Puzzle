@@ -4,13 +4,19 @@ import { Puzzle, Sidenav } from "./components";
 import { Container, GlobalStyle } from "./styled";
 
 const App = () => {
-  const [puzzle, setPuzzle] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [puzzle, setPuzzle] = useState([...Array(10).keys()].splice(1));
+  const [moves, setMoves] = useState(0);
 
   return (
     <Container>
       <GlobalStyle />
-      <Puzzle puzzle={puzzle} setPuzzle={setPuzzle} />
-      <Sidenav setPuzzle={setPuzzle} />
+      <Puzzle
+        puzzle={puzzle}
+        setPuzzle={setPuzzle}
+        moves={moves}
+        setMoves={setMoves}
+      />
+      <Sidenav length={puzzle.length} setPuzzle={setPuzzle} moves={moves} />
     </Container>
   );
 };
