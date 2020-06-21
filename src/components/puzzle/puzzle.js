@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 import { Container, Heading, PuzzleContainer, Plate, Number } from "./styled";
 
 const isSolved = puzzle => {
-  const solution = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const solution = [...Array(puzzle.length + 1).keys()].splice(1);
 
-  for (let i = 0; i < 9; i += 1) {
+  for (let i = 0; i < puzzle.length; i += 1) {
     if (puzzle[i] !== solution[i]) {
       return false;
     }
@@ -22,8 +22,9 @@ const swap = (arr, a, b) => {
   arr[b] = current;
 };
 
-const Puzzle = ({ puzzle, setPuzzle }) => {
-  const [gap, setGap] = useState(8);
+const Puzzle = ({ puzzle, setPuzzle, moves, setMoves }) => {
+  const [gap, setGap] = useState(puzzle.length - 1);
+  const side = Math.sqrt(puzzle.length);
 
   useEffect(() => {
     if (isSolved(puzzle)) {
@@ -37,11 +38,12 @@ const Puzzle = ({ puzzle, setPuzzle }) => {
     const arr = [...puzzle];
 
     if (
-      (gap % 3 === position % 3 && Math.abs(gap - position) === 3) ||
-      (Math.floor(gap / 3) === Math.floor(position / 3) &&
+      (gap % side === position % side && Math.abs(gap - position) === side) ||
+      (Math.floor(gap / side) === Math.floor(position / side) &&
         Math.abs(gap - position) === 1)
     ) {
       swap(arr, position, gap);
+      setMoves(moves + 1);
       setGap(position);
       setPuzzle(arr);
     }
@@ -50,10 +52,12 @@ const Puzzle = ({ puzzle, setPuzzle }) => {
   return (
     <Container>
       <Heading>Sliding Puzzle</Heading>
-      <PuzzleContainer>
+      <PuzzleContainer side={side}>
         {puzzle.map((number, index) => (
           <Plate
             key={number}
+            side={side}
+            sideWidth={600 / side}
             value={number - 1}
             onClick={() => handleClick(index)}
           >
@@ -66,8 +70,10 @@ const Puzzle = ({ puzzle, setPuzzle }) => {
 };
 
 Puzzle.propTypes = {
-  puzzle: PropTypes.arrayOf(Number).isRequired,
-  setPuzzle: PropTypes.func.isRequired
+  puzzle: PropTypes.arrayOf(PropTypes.number).isRequired,
+  setPuzzle: PropTypes.func.isRequired,
+  moves: PropTypes.number.isRequired,
+  setMoves: PropTypes.func.isRequired
 };
 
 export default Puzzle;
