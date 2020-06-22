@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -63,8 +63,24 @@ const generatePuzzle = length => {
   return numbers;
 };
 
-const generateNewImageId = imageId => {
+const imageExists = (url, setIsBroken) => {
+  const request = new XMLHttpRequest();
+  request.open("GET", url, true);
+
+  request.onload = function() {
+    if (request.readyState === request.DONE) {
+      setIsBroken(request.status === 404);
+    }
+  };
+
+  request.send(null);
+};
+
+const generateNewImageId = (imageId, setIsBroken) => {
   const newImageId = Math.floor(Math.random() * 1084) + 1;
+  const url = `https://picsum.photos/id/${newImageId}/600`;
+
+  imageExists(url, setIsBroken);
   return newImageId !== imageId ? newImageId : generateNewImageId(imageId);
 };
 
@@ -79,7 +95,16 @@ const Sidenav = ({
   imageId,
   setImageId
 }) => {
+  const [isBroken, setIsBroken] = useState(false);
   const length = side ** 2;
+
+  useEffect(() => {
+    if (isBroken) {
+      const newImageId = generateNewImageId(imageId, setIsBroken);
+      setImageId(newImageId);
+      setIsBroken(false);
+    }
+  }, [imageId, isBroken, setImageId]);
 
   useEffect(() => {
     setPuzzle(generatePuzzle(length));
@@ -137,7 +162,7 @@ const Sidenav = ({
 
       <ActionButton
         onClick={() => {
-          const newImageId = generateNewImageId(imageId);
+          const newImageId = generateNewImageId(imageId, setIsBroken);
           setImageId(newImageId);
         }}
       >
