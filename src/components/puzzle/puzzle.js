@@ -16,8 +16,8 @@ const swap = (arr, a, b) => {
   arr[b] = current;
 };
 
-const hadnleMovesText = moves => {
-  let text = `${moves} `;
+const generateAlertText = moves => {
+  let text = `Поздравляем! Вы собрали пазл за ${moves} `;
 
   switch (moves % 10) {
     case 1:
@@ -53,8 +53,13 @@ const Puzzle = ({
 
   useEffect(() => {
     if (isStarted && isSolved(puzzle)) {
-      alert(`Поздравляем! Вы собрали пазл за ${hadnleMovesText(moves)}`);
+      const alertText = generateAlertText(moves);
       setIsStarted(false);
+
+      setTimeout(() => {
+        // eslint-disable-next-line no-alert
+        alert(alertText);
+      }, 100);
     }
   }, [isStarted, moves, puzzle, setIsStarted]);
 
