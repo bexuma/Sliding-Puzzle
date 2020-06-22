@@ -1,7 +1,29 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+const Main = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Footer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #424242;
+  color: #fff;
+  text-align: center;
+
+  a {
+    margin-top: 8px;
+    color: #fff;
+  }
+`;
+
+const Container = styled.div`
+  flex: 7;
   background-color: green;
   display: flex;
   flex-direction: column;
@@ -70,5 +92,7 @@ export {
   Side,
   ActionButton,
   Moves,
-  Heading
+  Heading,
+  Main,
+  Footer
 };

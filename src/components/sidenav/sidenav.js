@@ -8,7 +8,9 @@ import {
   Side,
   ActionButton,
   Moves,
-  Heading
+  Heading,
+  Main,
+  Footer
 } from "./styled";
 
 const countInversions = arr => {
@@ -114,70 +116,78 @@ const Sidenav = ({
     if (!isStarted) setPuzzle(generatePuzzle(length));
   }, [setPuzzle, length, isStarted]);
 
-  if (isStarted) {
-    return (
+  return (
+    <Main>
       <Container>
         <Heading>
           Sliding
           <br />
           Puzzle
         </Heading>
-        <Moves>Количество ходов: {moves}</Moves>
+        {isStarted ? (
+          <>
+            <Moves>Количество ходов: {moves}</Moves>
 
-        <ActionButton
-          onClick={() => {
-            setIsStarted(false);
-            setMoves(0);
-          }}
-        >
-          Назад
-        </ActionButton>
+            <ActionButton
+              onClick={() => {
+                setIsStarted(false);
+                setMoves(0);
+              }}
+            >
+              Назад
+            </ActionButton>
+          </>
+        ) : (
+          <>
+            <SideController>
+              <SideButton
+                onClick={() => (side > 2 ? setSide(side - 1) : null)}
+                disabled={side <= 2}
+              >
+                -
+              </SideButton>
+              <Side>{side}</Side>
+              <SideButton
+                onClick={() => (side < 10 ? setSide(side + 1) : null)}
+                disabled={side >= 10}
+              >
+                +
+              </SideButton>
+            </SideController>
+
+            <ActionButton
+              onClick={() => {
+                const newImageId = generateNewImageId(imageId, setIsBroken);
+                setImageId(newImageId);
+              }}
+            >
+              Сменить картинку
+            </ActionButton>
+
+            <ActionButton
+              onClick={() => {
+                setPuzzle(startPuzzle(length));
+                setIsStarted(true);
+              }}
+            >
+              Начать
+            </ActionButton>
+          </>
+        )}
       </Container>
-    );
-  }
 
-  return (
-    <Container>
-      <Heading>
-        Sliding
+      <Footer>
+        Created by Bexultan Myrzatayev
         <br />
-        Puzzle
-      </Heading>
-
-      <SideController>
-        <SideButton
-          onClick={() => (side > 2 ? setSide(side - 1) : null)}
-          disabled={side <= 2}
+        <a
+          href="https://github.com/bexuma/Sliding-Puzzle"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          -
-        </SideButton>
-        <Side>{side}</Side>
-        <SideButton
-          onClick={() => (side < 10 ? setSide(side + 1) : null)}
-          disabled={side >= 10}
-        >
-          +
-        </SideButton>
-      </SideController>
-
-      <ActionButton
-        onClick={() => {
-          const newImageId = generateNewImageId(imageId, setIsBroken);
-          setImageId(newImageId);
-        }}
-      >
-        Сменить картинку
-      </ActionButton>
-
-      <ActionButton
-        onClick={() => {
-          setPuzzle(startPuzzle(length));
-          setIsStarted(true);
-        }}
-      >
-        Начать
-      </ActionButton>
-    </Container>
+          Explore the project on Github
+        </a>
+      </Footer>
+    </Main>
   );
 };
 
