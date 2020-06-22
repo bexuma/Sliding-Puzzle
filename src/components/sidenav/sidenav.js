@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { Container } from "./styled";
+import {
+  Container,
+  SideController,
+  SideButton,
+  Side,
+  ActionButton,
+  Moves,
+  Heading
+} from "./styled";
 
 const countInversions = arr => {
   let count = 0;
@@ -35,30 +43,129 @@ const shuffle = arr => {
   return arr;
 };
 
-const generatePuzzle = length => {
+const isSolved = puzzle => {
+  const solution = [...Array(puzzle.length + 1).keys()].splice(1);
+  return JSON.stringify(puzzle) === JSON.stringify(solution);
+};
+
+const startPuzzle = length => {
   const numbers = [...Array(length + 1).keys()].splice(1);
 
   const puzzle = shuffle(numbers.slice(0, numbers.length - 1));
   puzzle.push(numbers.length);
 
-  return isSolvable(puzzle) ? puzzle : generatePuzzle(length);
+  return isSolvable(puzzle) && !isSolved(puzzle) ? puzzle : startPuzzle(length);
 };
 
-const Sidenav = ({ length, setPuzzle, moves }) => {
+const generatePuzzle = length => {
+  const numbers = [...Array(length + 1).keys()].splice(1);
+
+  return numbers;
+};
+
+const generateNewImageId = imageId => {
+  const newImageId = Math.floor(Math.random() * 1084) + 1;
+  return newImageId !== imageId ? newImageId : generateNewImageId(imageId);
+};
+
+const Sidenav = ({
+  side,
+  setSide,
+  setPuzzle,
+  moves,
+  setMoves,
+  isStarted,
+  setIsStarted,
+  imageId,
+  setImageId
+}) => {
+  const length = side ** 2;
+
+  useEffect(() => {
+    setPuzzle(generatePuzzle(length));
+  }, [setPuzzle, length]);
+
+  useEffect(() => {
+    if (!isStarted) setPuzzle(generatePuzzle(length));
+  }, [setPuzzle, length, isStarted]);
+
+  if (isStarted) {
+    return (
+      <Container>
+        <Heading>
+          Sliding
+          <br />
+          Puzzle
+        </Heading>
+        <Moves>Количество ходов: {moves}</Moves>
+
+        <ActionButton
+          onClick={() => {
+            setIsStarted(false);
+            setMoves(0);
+          }}
+        >
+          Назад
+        </ActionButton>
+      </Container>
+    );
+  }
+
   return (
     <Container>
-      <button type="button" onClick={() => setPuzzle(generatePuzzle(length))}>
+      <Heading>
+        Sliding
+        <br />
+        Puzzle
+      </Heading>
+
+      <SideController>
+        <SideButton
+          onClick={() => (side > 2 ? setSide(side - 1) : null)}
+          disabled={side <= 2}
+        >
+          -
+        </SideButton>
+        <Side>{side}</Side>
+        <SideButton
+          onClick={() => (side < 10 ? setSide(side + 1) : null)}
+          disabled={side >= 10}
+        >
+          +
+        </SideButton>
+      </SideController>
+
+      <ActionButton
+        onClick={() => {
+          const newImageId = generateNewImageId(imageId);
+          setImageId(newImageId);
+        }}
+      >
+        Сменить картинку
+      </ActionButton>
+
+      <ActionButton
+        onClick={() => {
+          setPuzzle(startPuzzle(length));
+          setIsStarted(true);
+        }}
+      >
         Начать
-      </button>
-      <p>Number of steps: {moves}</p>
+      </ActionButton>
     </Container>
   );
 };
 
 Sidenav.propTypes = {
-  length: PropTypes.number.isRequired,
+  side: PropTypes.number.isRequired,
+  setSide: PropTypes.func.isRequired,
   setPuzzle: PropTypes.func.isRequired,
-  moves: PropTypes.number.isRequired
+  moves: PropTypes.number.isRequired,
+  setMoves: PropTypes.func.isRequired,
+  isStarted: PropTypes.bool.isRequired,
+  setIsStarted: PropTypes.func.isRequired,
+  imageId: PropTypes.number.isRequired,
+  setImageId: PropTypes.func.isRequired
 };
 
 export default Sidenav;
