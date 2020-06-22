@@ -1,22 +1,23 @@
 import styled, { css } from "styled-components";
 
-import image from "../../image.png";
-
 const Container = styled.div`
   flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  height: 100vh;
+  background-color: #fafafa;
 `;
 
-const Heading = styled.h1``;
-
 const PuzzleContainer = styled.div`
-  width: ${({ side }) => `${600 + side * 2}px`};
+  width: ${({ side }) => `${600 + (side + 1) * 2}px`};
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  min-height: ${({ side }) => `${600 + (side + 1) * 2}px`};
+  border: 16px solid #bdbdbd;
+  background-color: #fff;
 `;
 
 const Number = styled.span`
@@ -26,21 +27,17 @@ const Number = styled.span`
 const Plate = styled.div`
   width: ${({ sideWidth }) => `${sideWidth}px`};
   height: ${({ sideWidth }) => `${sideWidth}px`};
+  margin-top: 2px;
   margin-left: 2px;
-  margin-bottom: 2px;
   position: relative;
 
-  ${({ value, side, sideWidth }) =>
+  ${({ value, side, sideWidth, imageId }) =>
     value !== side ** 2 - 1 &&
     css`
-      background-image: url(${image});
+      background-image: url(${`https://picsum.photos/id/${imageId}/600`});
       background-position: ${() => {
-        const first =
-          value % side === 0 ? 0 : sideWidth * (-1) ** (value % side);
-        const second =
-          Math.floor(value / side) === 0
-            ? 0
-            : sideWidth * (-1) ** Math.floor(value / side);
+        const first = sideWidth * (side - (value % side));
+        const second = sideWidth * (side - Math.floor(value / side));
 
         return `${first}px ${second}px`;
       }};
@@ -54,4 +51,4 @@ const Plate = styled.div`
     `};
 `;
 
-export { Container, Heading, PuzzleContainer, Plate, Number };
+export { Container, PuzzleContainer, Plate, Number };

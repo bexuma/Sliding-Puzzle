@@ -1,19 +1,13 @@
 /* eslint-disable no-param-reassign */
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { Container, Heading, PuzzleContainer, Plate, Number } from "./styled";
+import { Container, PuzzleContainer, Plate, Number } from "./styled";
 
 const isSolved = puzzle => {
   const solution = [...Array(puzzle.length + 1).keys()].splice(1);
 
-  for (let i = 0; i < puzzle.length; i += 1) {
-    if (puzzle[i] !== solution[i]) {
-      return false;
-    }
-  }
-
-  return true;
+  return JSON.stringify(puzzle) === JSON.stringify(solution);
 };
 
 const swap = (arr, a, b) => {
@@ -22,15 +16,47 @@ const swap = (arr, a, b) => {
   arr[b] = current;
 };
 
-const Puzzle = ({ puzzle, setPuzzle, moves, setMoves }) => {
-  const [gap, setGap] = useState(puzzle.length - 1);
-  const side = Math.sqrt(puzzle.length);
+const hadnleMovesText = moves => {
+  let text = `${moves} `;
+
+  switch (moves % 10) {
+    case 1:
+      text += "ход";
+      break;
+    case 2:
+    case 3:
+    case 4:
+      text += "хода";
+      break;
+    default:
+      text += "ходов";
+  }
+
+  return text;
+};
+
+const Puzzle = ({
+  puzzle,
+  setPuzzle,
+  moves,
+  setMoves,
+  side,
+  gap,
+  setGap,
+  isStarted,
+  setIsStarted,
+  imageId
+}) => {
+  useEffect(() => {
+    setGap(side ** 2 - 1);
+  }, [setGap, side]);
 
   useEffect(() => {
-    if (isSolved(puzzle)) {
-      // alert("Congratulations, Amina! You solved the puzzle!");
+    if (isStarted && isSolved(puzzle)) {
+      alert(`Поздравляем! Вы собрали пазл за ${hadnleMovesText(moves)}`);
+      setIsStarted(false);
     }
-  }, [puzzle]);
+  }, [isStarted, moves, puzzle, setIsStarted]);
 
   const handleClick = position => {
     if (position === gap) return;
@@ -51,7 +77,6 @@ const Puzzle = ({ puzzle, setPuzzle, moves, setMoves }) => {
 
   return (
     <Container>
-      <Heading>Sliding Puzzle</Heading>
       <PuzzleContainer side={side}>
         {puzzle.map((number, index) => (
           <Plate
@@ -59,6 +84,7 @@ const Puzzle = ({ puzzle, setPuzzle, moves, setMoves }) => {
             side={side}
             sideWidth={600 / side}
             value={number - 1}
+            imageId={imageId}
             onClick={() => handleClick(index)}
           >
             <Number>{number}</Number>
@@ -73,7 +99,13 @@ Puzzle.propTypes = {
   puzzle: PropTypes.arrayOf(PropTypes.number).isRequired,
   setPuzzle: PropTypes.func.isRequired,
   moves: PropTypes.number.isRequired,
-  setMoves: PropTypes.func.isRequired
+  setMoves: PropTypes.func.isRequired,
+  side: PropTypes.number.isRequired,
+  gap: PropTypes.number.isRequired,
+  setGap: PropTypes.func.isRequired,
+  isStarted: PropTypes.bool.isRequired,
+  setIsStarted: PropTypes.func.isRequired,
+  imageId: PropTypes.number.isRequired
 };
 
 export default Puzzle;
