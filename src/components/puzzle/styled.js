@@ -11,13 +11,15 @@ const Container = styled.div`
 `;
 
 const PuzzleContainer = styled.div`
-  width: ${({ side }) => `${600 + (side + 1) * 2}px`};
+  padding-top: 2px;
+  padding-left: 2px;
+  width: ${({ side }) => `${600 + side * 2}px`};
+  height: ${({ side }) => `${600 + side * 2}px`};
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  min-height: ${({ side }) => `${600 + (side + 1) * 2}px`};
-  border: 16px solid #bdbdbd;
   background-color: #fff;
+  border: 16px solid #bdbdbd;
 `;
 
 const Number = styled.span`
@@ -27,8 +29,8 @@ const Number = styled.span`
 const Plate = styled.div`
   width: ${({ sideWidth }) => `${sideWidth}px`};
   height: ${({ sideWidth }) => `${sideWidth}px`};
-  margin-top: 2px;
-  margin-left: 2px;
+  margin-bottom: 2px;
+  margin-right: 2px;
   position: relative;
 
   ${({ value, side, sideWidth, imageId }) =>
