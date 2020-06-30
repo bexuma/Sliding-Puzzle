@@ -1,4 +1,4 @@
-import Puzzle from "./puzzle";
-import Sidenav from "./sidenav";
+import List from "./list";
+import Page from "./page";
 
-export { Puzzle, Sidenav };
+export { List, Page };

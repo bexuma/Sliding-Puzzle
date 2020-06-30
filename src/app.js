@@ -1,45 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
-import { Puzzle, Sidenav } from "./components";
+import { List, Page } from "./components";
 import { Container, GlobalStyle } from "./styled";
+import { list } from "./list";
 
 const App = () => {
-  const [isStarted, setIsStarted] = useState(false);
-  const [side, setSide] = useState(4);
-  const [puzzle, setPuzzle] = useState([...Array(16 + 1).keys()].splice(1));
-  const [gap, setGap] = useState(16 - 1);
-  const [moves, setMoves] = useState(0);
-  const [isSolvable, setIsSolvable] = useState(true);
-  const [imageId, setImageId] = useState(Math.floor(Math.random() * 1084) + 1);
+  const [id, setId] = useState(1);
+  const formMethods = useForm({ defaultValues: list });
+  const onSubmit = data => console.log(data);
+
+  useEffect(() => {
+    if (list) {
+      list.forEach((item, idx) => {
+        formMethods.register(`[${idx + 1}].username`);
+      });
+    }
+  }, [formMethods]);
 
   return (
     <Container>
       <GlobalStyle />
-      <Puzzle
-        puzzle={puzzle}
-        setPuzzle={setPuzzle}
-        moves={moves}
-        setMoves={setMoves}
-        side={side}
-        gap={gap}
-        setGap={setGap}
-        isSolvable={isSolvable}
-        isStarted={isStarted}
-        setIsStarted={setIsStarted}
-        imageId={imageId}
-      />
-      <Sidenav
-        side={side}
-        setSide={setSide}
-        setPuzzle={setPuzzle}
-        moves={moves}
-        setMoves={setMoves}
-        isStarted={isStarted}
-        setIsStarted={setIsStarted}
-        setIsSolvable={setIsSolvable}
-        imageId={imageId}
-        setImageId={setImageId}
-      />
+      <List id={id} setId={setId} />
+      <Page id={id} onSubmit={onSubmit} {...formMethods} />
     </Container>
   );
 };
