@@ -7,9 +7,9 @@ const GlobalStyle = createGlobalStyle`
  }
 `;
 
-const Container = styled.div`
+const AppContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-export { Container, GlobalStyle };
+export { AppContainer, GlobalStyle };
